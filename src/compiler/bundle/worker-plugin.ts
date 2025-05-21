@@ -18,7 +18,10 @@ export const workerPlugin = (
       name: 'workerPlugin',
       transform(_, id) {
         if (id.endsWith('?worker') || id.endsWith('?worker-inline')) {
-          return getMockedWorkerMain();
+          return {
+            code: getMockedWorkerMain(),
+            map: { mappings: '' } // Add empty sourcemap
+          };
         }
         return null;
       },
@@ -77,6 +80,7 @@ export const workerPlugin = (
         return {
           code: getWorkerMain(referenceId, workerName, workerMsgId),
           moduleSideEffects: false,
+          map: { mappings: '' } // Add empty sourcemap
         };
       } else if (id.endsWith('?worker-inline')) {
         const workerEntryPath = normalizeFsPath(id);
@@ -98,6 +102,7 @@ export const workerPlugin = (
         return {
           code: getInlineWorker(referenceId, workerName, workerMsgId),
           moduleSideEffects: false,
+          map: { mappings: '' } // Add empty sourcemap
         };
       }
 
@@ -110,11 +115,13 @@ export const workerPlugin = (
             return {
               code: getInlineWorkerProxy(workerEntryPath, worker.workerMsgId, worker.exports),
               moduleSideEffects: false,
+              map: { mappings: '' } // Add empty sourcemap
             };
           } else {
             return {
               code: getWorkerProxy(workerEntryPath, worker.exports),
               moduleSideEffects: false,
+              map: { mappings: '' } // Add empty sourcemap
             };
           }
         }
